@@ -1,6 +1,8 @@
 const api_endpoint = import.meta.env.VITE_API_ENDPOINT;
+import crypto from "crypto";
 
 export const signIn = async (user_id, password) => {
+    const passwordHash = crypto.createHash("md5").update(password).digest("hex");
 
     const options = {
         method: 'PUT',
@@ -10,7 +12,7 @@ export const signIn = async (user_id, password) => {
         body: JSON.stringify(
             {
                 user_id: user_id,
-                password: password
+                password: passwordHash
             })
     }
 
@@ -27,6 +29,7 @@ export const signIn = async (user_id, password) => {
 }
 
 export const signUp = async (user_id, password) => {
+    const passwordHash = crypto.createHash("md5").update(password).digest("hex");
 
     const options = {
         method: 'PUT',
@@ -36,7 +39,7 @@ export const signUp = async (user_id, password) => {
         body: JSON.stringify(
             {
                 user_id: user_id,
-                password: password
+                password: passwordHash
             })
     }
 

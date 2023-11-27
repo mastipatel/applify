@@ -1,4 +1,4 @@
-const api_endpoint = process.env.REACT_APP_API_GATEWAY_URL;
+const api_endpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const signIn = async (user_id, password) => {
 

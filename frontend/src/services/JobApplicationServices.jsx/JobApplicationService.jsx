@@ -1,4 +1,4 @@
-const api_endpoint = process.env.REACT_APP_API_GATEWAY_URL;
+const api_endpoint = import.meta.env.VITE_API_ENDPOINT;
 
 export const createApplication = async (company_name, job_role, application_deadline, application_status, user_id, notifications_active) => {
 

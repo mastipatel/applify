@@ -451,9 +451,9 @@ Resources:
         sudo npm i
         sudo apt-get install -y awscli
         sudo apt-get install jq -y
-        aws configure set aws_access_key_id ASIA44YGKE6QEMZYAZ6X
-        aws configure set aws_secret_access_key T8vUn2tf7ra9/4FL4RkQYzo6VrFj7rW0P/oCuWrX
-        aws configure set aws_session_token FwoGZXIvYXdzECcaDGDs1V2x5penBPM9pCLAAVQkiMgjGPmNVMoQ0tZ4H0aBwgjaUvSp/ppvkyoKRpPOmH4ekGu0E1oOACnw3PKI/rJFQPl39movVR9Go673jzHF3+wscWp9aOkT3OGBTEGV0aXvn9/hHZaOYlcnuopsIeT7nAYZwpzlcpJ1UlNH21+hvKdY0+yZSImOVmMf6sAkGPUdT9EWLePn0N9K2+pzhXUsdQiDod30gsIAboqcmMOXoFqEAfz2/iJbDigogxdvz5xH1lIhl0bhiez3O1n27Cjft76rBjItM2o2/0JoSI8M66G5DkKhASKlZg0+cYuwl0fu1mIFrVvlwNFQ2ROzqRqu4nxp
+        aws configure set aws_access_key_id <id>
+        aws configure set aws_secret_access_key <key>
+        aws configure set aws_session_token <token>
         aws configure set region us-east-1
         gatewayid=$(aws apigatewayv2 get-apis | jq -r '.Items[] | select(.Name=="applify") | .ApiId')
         VITE_API_ENDPOINT="VITE_API_ENDPOINT=https://${gatewayid}.execute-api.us-east-1.amazonaws.com/prod"

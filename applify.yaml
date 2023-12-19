@@ -1,0 +1,461 @@
+Resources:
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: users
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  JobApplicationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: job-applications
+      AttributeDefinitions:
+        - AttributeName: application_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: application_id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  SignUpLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SignUpLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: SignUpLambda.zip
+
+  SignInLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SignInLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: SignInLambda.zip
+
+  DeleteAccountLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: DeleteAccountLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: DeleteAccountLambda.zip
+
+  CreateLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: CreateLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: CreateLambda.zip
+
+  DeleteLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: DeleteLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: DeleteLambda.zip
+
+  EditLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: EditLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: EditLambda.zip
+
+  GetbyEmailLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: GetbyEmailLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: GetbyEmailLambda.zip
+
+  SubscribeLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: SubscribeLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Environment:
+        Variables:
+          sns: !Ref UserSNSTopic
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: SubscribeLambda.zip
+
+  NotificationLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: NotificationLambda
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Timeout: 30
+      Role: arn:aws:iam::886387124128:role/LabRole
+      Environment:
+        Variables:
+          sns: !Ref UserSNSTopic
+      Code:
+        S3Bucket: termassignmentlambdas
+        S3Key: NotificationLambda.zip
+
+  applifyAPIGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: applify
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins: 
+          - '*'
+        AllowMethods:
+          - '*'
+        AllowHeaders:
+          - '*'
+        ExposeHeaders:
+          - '*'
+        MaxAge: 0
+
+  SignInLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt SignInLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  SignInIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt SignInLambda.Arn
+
+  SignInRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "PUT /users/sign-in"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref SignInIntegration
+
+  DeleteAccountLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt DeleteAccountLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  DeleteAccountIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt DeleteAccountLambda.Arn
+
+  DeletAccountRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "DELETE /users/{user_id}"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref DeleteAccountIntegration
+
+  SignUpLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt SignUpLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  SignUpIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt SignUpLambda.Arn
+
+  SignUpRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "PUT /users/sign-up"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref SignUpIntegration
+
+  SubscribeLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt SubscribeLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  SubscribeIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt SubscribeLambda.Arn
+
+  SubscribeRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "PUT /users/subscribe"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref SubscribeIntegration
+
+  CreateLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt CreateLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  CreateIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt CreateLambda.Arn
+
+  CreateRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "PUT /job-application/create"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref CreateIntegration
+
+  DeleteLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt DeleteLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  DeleteIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt DeleteLambda.Arn
+
+  DeleteRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "DELETE /job-application/{application_id}"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref DeleteIntegration
+
+  EditLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt EditLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  EditIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt EditLambda.Arn
+
+  EditRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "PUT /job-application/edit"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref EditIntegration
+
+  GetbyEmailLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt GetbyEmailLambda.Arn
+      Principal: apigateway.amazonaws.com 
+
+  GetbyEmailIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      Description: Lambda proxy integration
+      IntegrationType: AWS_PROXY
+      IntegrationMethod: POST
+      PayloadFormatVersion: "2.0"
+      IntegrationUri: !GetAtt GetbyEmailLambda.Arn
+
+  GetbyEmailRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      RouteKey: "GET /job-application"
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref GetbyEmailIntegration
+
+  applifyApiDeployment:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref applifyAPIGateway
+      StageName: prod
+      AutoDeploy: true
+
+  UserSNSTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      DisplayName: 'userTopic'
+      TopicName: 'userTopic'
+
+  NotificationEventBridgeRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: 'daily-timer'
+      Description: 'Trigger Lambda once every day'
+      ScheduleExpression: 'rate(1 day)'
+      State: 'ENABLED'
+      Targets: 
+        - Arn: !GetAtt NotificationLambda.Arn
+          Id: 'first'
+
+  ec2sg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "EC2 Applify"
+      GroupName: ec2sg
+      SecurityGroupIngress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+
+  ec2applify:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-053b0d53c279acc90
+      InstanceType: t2.micro
+      KeyName: vockey
+      SecurityGroups:
+        - !Ref ec2sg
+      UserData: !Base64 |
+        #!/bin/bash
+        sudo apt-get update
+        cd /home/ubuntu
+        git clone https://github.com/Harshpatel249/applify.git
+        sudo apt-get install -y nodejs
+        sudo apt-get install -y npm
+        sudo npm cache clean -f
+        sudo npm install -g n
+        sudo n stable
+        hash -r
+        cd applify/frontend
+        sudo npm i
+        sudo apt-get install -y awscli
+        sudo apt-get install jq -y
+        aws configure set aws_access_key_id ASIA44YGKE6QEMZYAZ6X
+        aws configure set aws_secret_access_key T8vUn2tf7ra9/4FL4RkQYzo6VrFj7rW0P/oCuWrX
+        aws configure set aws_session_token FwoGZXIvYXdzECcaDGDs1V2x5penBPM9pCLAAVQkiMgjGPmNVMoQ0tZ4H0aBwgjaUvSp/ppvkyoKRpPOmH4ekGu0E1oOACnw3PKI/rJFQPl39movVR9Go673jzHF3+wscWp9aOkT3OGBTEGV0aXvn9/hHZaOYlcnuopsIeT7nAYZwpzlcpJ1UlNH21+hvKdY0+yZSImOVmMf6sAkGPUdT9EWLePn0N9K2+pzhXUsdQiDod30gsIAboqcmMOXoFqEAfz2/iJbDigogxdvz5xH1lIhl0bhiez3O1n27Cjft76rBjItM2o2/0JoSI8M66G5DkKhASKlZg0+cYuwl0fu1mIFrVvlwNFQ2ROzqRqu4nxp
+        aws configure set region us-east-1
+        gatewayid=$(aws apigatewayv2 get-apis | jq -r '.Items[] | select(.Name=="applify") | .ApiId')
+        VITE_API_ENDPOINT="VITE_API_ENDPOINT=https://${gatewayid}.execute-api.us-east-1.amazonaws.com/prod"
+        echo $VITE_API_ENDPOINT >> .env
+        sudo npm run dev

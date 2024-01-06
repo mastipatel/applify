@@ -1,1 +1,25 @@
-<p>home works!</p>
+<div class="flex w-full min-h-screen bg-primaryBackground items-start justify-center">
+    <div class="flex flex-col main bg-primaryBackground items-start">
+      <div class="flex width-1080 mb-4">
+        <div class="flex width-306 height-40 items-center">
+          <span class="font-semibold opacity-69">Company</span>
+        </div>
+        <div class="flex width-306 height-40 items-center">
+          <span class="font-semibold opacity-69">Job role</span>
+        </div>
+        <div class="flex width-162 height-40 items-center">
+          <span class="font-semibold opacity-69">Status</span>
+        </div>
+        <div class="flex width-162 height-40 items-center">
+          <span class="font-semibold opacity-69">Deadline</span>
+        </div>
+        <div class="flex width-144 height-40 items-center justify-center">
+          <button (click)="toggleAddOpen()">
+            <img *ngIf="addOpen" src="../../../assets/close.svg" alt="Close">
+            <img *ngIf="!addOpen" src="../../../assets/add.svg" alt="Add">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

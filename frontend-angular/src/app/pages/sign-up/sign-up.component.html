@@ -4,19 +4,19 @@
     </div>
     <div class="flex flex-col items-center shadow-md p-6">
         <h1 class="text-primaryForeground font-bold italic font-sans mt-4 text-3xl">Applify</h1>
-        <form onsubmit="handleSubmit" class="flex flex-col w-72 mt-8">
+        <form [formGroup]="loginForm" (ngSubmit)="onSignUp()" class="flex flex-col w-72 mt-8">
             <div class="mb-4">
-                <input type="email" placeholder="email" value="{email}" onchange="handleEmailChange" class="bg-white border border-gray-300 rounded px-3 py-2 w-full">
+                <input type="email" placeholder="email" formControlName="email" class="bg-white border border-gray-300 rounded px-3 py-2 w-full">
             </div>
             <div class="mb-4">
-                <input type="password" placeholder="password" value="{password}" onchange="handlePasswordChange" class="bg-white border border-gray-300 rounded px-3 py-2 w-full">
+                <input type="password" placeholder="password" formControlName="password" class="bg-white border border-gray-300 rounded px-3 py-2 w-full">
             </div>
             <button type="submit" class="bg-accent hover:bg-accent text-secondaryForeground rounded px-3 py-2 mt-4 font-medium">
                 Sign-Up
             </button>
             <div class="flex mt-1">
                 <span class="text-sm mr-2">Already have an account? </span>
-                <button onclick="navigate('/user/sign-up')" class="text-sm font-bold">Sign-in</button>
+                <button type="button" (click)="navigate('/user/sign-in')" class="text-sm font-bold">Sign-In</button>
             </div>
         </form>
     </div>

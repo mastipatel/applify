@@ -1,0 +1,38 @@
+<form [formGroup]="addForm" (ngSubmit)="handleSubmit()">
+    <div class="flex width-1080 mb-8">
+      <div class="flex width-306 height-40 items-center shadow-md">
+        <div class="w-full">
+          <input class="w-full h-full border-none outline-none" type="text" placeholder="Company" formControlName="companyName" required>
+        </div>
+      </div>
+      <div class="flex width-306 height-40 items-center shadow-md">
+        <div class="w-full">
+          <input class="w-full h-full border-none outline-none" type="text" placeholder="Role" formControlName="jobRole" required>
+        </div>
+      </div>
+      <div class="flex width-162 height-40 items-center shadow-md">
+        <div class="w-full">
+          <input class="w-full h-full border-none outline-none" type="text" placeholder="Status" formControlName="status" required>
+        </div>
+      </div>
+      <div class="flex width-162 height-40 items-center shadow-md">
+        <div class="w-full">
+          <input class="w-full h-full border-none outline-none" type="text" placeholder="MM/DD/YYYY" formControlName="deadline" required>
+        </div>
+      </div>
+      <div class="flex width-48 height-40 items-center justify-center">
+        <button type="button" (click)="toggleNotificationsActive()">
+          <img *ngIf="notificationsActive" src="../../../assets/notifications_active.svg" alt="NotificationsActive">
+          <img *ngIf="!notificationsActive" src="../../../assets/notifications.svg" alt="Notifications">
+        </button>
+      </div>
+      <div class="flex width-96 height-40 items-center justify-center">
+        <button type="submit">
+          <ng-template #saveText>
+            <span>Save</span>
+          </ng-template>
+        </button>
+      </div>
+    </div>
+  </form>
+  

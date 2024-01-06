@@ -1,0 +1,37 @@
+<div class="flex flex-col width-1080">
+    <div class="flex width-1080">
+      <div class="flex width-306 height-40 items-center shadow-md">
+        <span class="ml-8 font-semibold">{{ applicationData.company_name }}</span>
+      </div>
+      <div class="flex width-306 height-40 items-center shadow-md">
+        <span class="ml-8 font-semibold">{{ applicationData.job_role }}</span>
+      </div>
+      <div class="flex width-162 height-40 items-center shadow-md">
+        <span class="ml-8 font-semibold">{{ applicationData.application_status }}</span>
+      </div>
+      <div class="flex width-162 height-40 items-center shadow-md">
+        <span class="ml-8 font-semibold">{{ applicationData.application_deadline }}</span>
+      </div>
+      <div class="flex width-48 height-40 items-center justify-center">
+        <button>
+          <img *ngIf="applicationData.notifications_active" src="NotificationsActive" alt="NotificationsActive">
+          <img *ngIf="!applicationData.notifications_active" src="Notifications" alt="Notifications">
+        </button>
+      </div>
+      <div class="flex width-48 height-40 items-center justify-center">
+        <button (click)="toggleEditOpen()">
+          <img *ngIf="editOpen" src="Close" alt="Close">
+          <img *ngIf="!editOpen" src="Edit" alt="Edit">
+        </button>
+      </div>
+      <div class="flex width-48 height-40 items-center justify-center">
+        <button>
+          <img src="Delete" alt="Delete">
+        </button>
+      </div>
+    </div>
+    <div *ngIf="editOpen">
+      <app-add-application *ngIf="editOpen"></app-add-application>
+    </div>
+  </div>
+  

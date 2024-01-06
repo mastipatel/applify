@@ -1,0 +1,28 @@
+.main {
+    width: 1080px;
+    min-height: 90vh;
+}
+
+.width-1080 {
+    width: 1080px;
+}
+
+.width-306 {
+    width: 306px;
+}
+
+.width-162{
+    width: 162px;
+}
+
+.width-144{
+    width: 144px;
+}
+
+.height-40{
+    height: 40px;
+}
+
+.opacity-69 {
+    opacity: 69%;
+}

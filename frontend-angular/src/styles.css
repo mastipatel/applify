@@ -2,3 +2,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.width-1080 {
+    width: 1080px;
+}
+
+.width-306 {
+    width: 306px;
+}
+
+.width-162{
+    width: 162px;
+}
+
+.width-144{
+    width: 144px;
+}
+
+.width-48 {
+    width: 48px;
+}
+
+.width-96 {
+    width: 96px;
+}
+
+.height-40{
+    height: 40px;
+}
+
+.opacity-69 {
+    opacity: 69%;
+}

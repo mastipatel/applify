@@ -9,8 +9,8 @@ const applicationRoute = require('./routes/jobapplications.js');
 const app = express();
 dotenv.config();
 
-const uri = process.env.URI;
-const PORT = process.env.PORT;
+// const uri = process.env.URI;
+ const PORT = 8080;
 
 //json parser, limit set to 30 MB for image transfer
 app.use(express.json({
@@ -26,7 +26,7 @@ app.use(cors());
 // connecting to the database
 async function connect() {
   try {
-    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect("mongodb+srv://mastipatel172000:pAHTCxCH2Xute0aa@cluster0.rbo7n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
     console.log("Connected to MongoDB");
   }
   catch (err) {

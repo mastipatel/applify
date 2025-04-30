@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: applify-frontend-service
+  labels:
+    app: applify
+    name: applify-frontend-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30004
+  selector:
+    name: webapp-pod
+    app: applify
+  
